@@ -87,6 +87,7 @@ describe('register()', () => {
 			.rejects.toEqual( Error('please enter a valid email') )
 		done()
 	})
+
 	test('email is incorrect format (with 2 @ symbols)', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
@@ -95,7 +96,7 @@ describe('register()', () => {
 		done()
 	})
 
-	test('email is duplicate', async done => {
+ 	test('email is duplicate', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
 		await account.register('doej', 'password', '28 Bonley Road', '2RE', 24, 'mcg@uni.com')
