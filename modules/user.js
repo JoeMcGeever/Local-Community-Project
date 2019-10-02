@@ -40,7 +40,6 @@ module.exports = class User {
 			const data = await this.db.get(sql)
 			if(data.records !== 0) {
 				throw new Error(`username "${user}" already in use`)
-				console.log(data.records)
 			}
 			//Checks to see if email is duplicate
 			sql = `SELECT COUNT(id) as records FROM users WHERE email="${email}";`
