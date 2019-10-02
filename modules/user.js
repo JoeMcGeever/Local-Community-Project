@@ -19,7 +19,7 @@ module.exports = class User {
 		})()
 	}
 
-	async register(user, pass) {
+	async register(user, pass, address, postcode, ward, email) {
 		try {
 			if(user.length === 0) throw new Error('missing username')
 			if(pass.length === 0) throw new Error('missing password')
