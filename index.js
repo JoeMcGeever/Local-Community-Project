@@ -47,7 +47,7 @@ const saltRounds = 10
  */
 router.get('/', async ctx => {
 	try {
-		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=you need to log in')
+		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=Please log in')
 		const data = {}
 		if(ctx.query.msg) data.msg = ctx.query.msg
 		await ctx.render('index')
