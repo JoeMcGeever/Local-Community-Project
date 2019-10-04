@@ -13,14 +13,11 @@ body {
 h1 {
   text-align: center
 }
-
-  .msg {
-    border: 1px solid black;
-    font-weight: bold;
-    color: black;
-    padding: 1em;
-  }
   
 figure#floating {
   text-align: center
+}
+p1 {
+  border-style: solid;
+  border-color: red green blue yellow;
 }

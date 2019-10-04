@@ -1,26 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
 
-<!doctype html>
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>Log In</title>
-		<meta name="description" content="form to add new books">
-		<meta name="author" content="Mark Tyers">
-		<link href="style.css" type="text/css" rel="stylesheet" />
-	</head>
-	<body background="images/loginImage.jpg">
-		<h1>304 Local Community!</h1>
-		<figure id="floating">
-		{{#if msg}}
- 			<p class="msg">{{msg}}</p>
-		{{/if}}
-		<form action="/login" method="post">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<style>
+
+
+#img1 {
+    background-image: url("https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwiG85T9sIPlAhUKoRQKHQKLAqYQjRx6BAgBEAQ&url=http%3A%2F%2Fbritainandbritishness.com%2F2017%2F09%2F10-beautiful-english-villages.html&psig=AOvVaw0XAgwtoyhtYUadk7eD_mKl&ust=1570305228308571");
+    background-position: center center;
+    background-size: cover;
+}
+
+</style>
+  </head>
+  <body>
+
+
+
+      <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel" data-interval="3000">
+          <div class="carousel-inner">
+            <div id="img1" class="carousel-item active"></div>
+            <div id="img2" class="carousel-item"></div>
+            <div id="img3" class="carousel-item"></div>
+          </div>
+        </div>
+
+    </body>
+</html>
+
+
+
+
+<div class="container">
+    <div class="center-block" style="background-color:rgba(255,255,255,.7); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 30px 60px; border-radius: 25px; box-shadow: 2px 2px 2px;">
+        <div>
+            <p>Local Community</p>
+        </div>
+    <div class="">
+        <form method='POST' action=''>
+        <fieldset>
+        <legend>Login</legend>
+            <form action="/login" method="post">
 			<p>Username:<br /><input type="text" name="user" placeholder="your username" value="{{user}}" autofocus></p>
 			<p>Password:<br /><input type="password" name="pass" placeholder="your password" value=""></p>
 			<p><input type="submit" value="Log in"></p>
-		</form>
-		<p><a href="/register">register</a></p>
-		</figure>
-	</body>
-</html>
+		    </form>
+			</p1>
+		    <p><a href="/register">register</a></p>
+        </fieldset>
+        </form>
+        <div class="alert alert-warning">
+            <p><strong>Local Community</strong> -Welcome to our local community website. Please
+			log in or register if you are a new member.</p>
+        </div>
+    </div>
+    </div>
+</div>
