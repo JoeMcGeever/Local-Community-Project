@@ -8,14 +8,5 @@ body {
     background-size: cover;
 }
 
-h1 {
-  text-align: center
-}
-  
-figure#floating {
-  text-align: center
-}
-p1 {
-  border-style: solid;
-  border-color: red green blue yellow;
-}
+
+
