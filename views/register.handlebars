@@ -13,20 +13,18 @@
 <div class="container">
     <div class="center-block" style="background-color:rgba(255,255,255,.7); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 30px 60px; border-radius: 25px; box-shadow: 2px 2px 2px;">
     <div class="">
-        <form method='POST' action=''>
         <fieldset>
         <legend>Login</legend>
-            <form action="/register" enctype="multipart/form-data" method="post">
-			<p>Username:<br /><input type="text" name="user" placeholder="your username (no spaces)" value=""></p>
-            <p>Password:<br /><input type="password" name="pass" placeholder="your chosen password" value=""></p>
-			<p>Address line1:<br /> <input type="text" name = "address" placeholder="the first line of your adress" value=""></p>
-			<p>Postcode (CV3 xxx):<br /> <input type="text" name = "postcode" placeholder="last three characters" value=""></p>
-			<p>Ward:<br /> <input type="text" name = "ward" placeholder="your ward" value=""></p>
-			<p>Email:<br /> <input type="text" name = "email" placeholder="Enter your address" value=""></p>
-			<p><input type="submit" value="Create"></p>
+            <form action="/registerPost" enctype="multipart/form-data" method="post">
+			    <p>Username:<br /><input type="text" name="user" placeholder="your username (no spaces)" value=""></p>
+                <p>Password:<br /><input type="password" name="pass" placeholder="your chosen password" value=""></p>
+			    <p>Address line1:<br /> <input type="text" name = "address" placeholder="the first line of your adress" value=""></p>
+			    <p>Postcode (CV3 xxx):<br /> <input type="text" name = "postcode" placeholder="last three characters" value=""></p>
+		    	<p>Ward:<br /> <input type="text" name = "ward" placeholder="your ward" value=""></p>
+		    	<p>Email:<br /> <input type="text" name = "email" placeholder="Enter your address" value=""></p>
+			    <p><input type="submit" value="Create"></p>
 		    </form>
         </fieldset>
-        </form>
         <div class="alert alert-warning">
             <p><strong>Already have an account?</strong> -<a href="/">Log In</a>.</p>
         </div>
