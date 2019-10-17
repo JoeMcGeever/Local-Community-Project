@@ -34,7 +34,7 @@
     "koa-static": "^5.0.0",
     "koa-views": "^6.1.5",
     "mime-types": "^2.1.22",
-    "sqlite-async": "^1.0.11"
+    "sqlite-async": "^1.0.12"
   },
   "devDependencies": {
     "eslint": "^5.15.2",
