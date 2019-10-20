@@ -1,10 +1,8 @@
-//ADJUST THIS FILE SO THAT ALL IT DOES IS COLLATE THE DATA AND PASS IT (along with validation) - within register
-//throw errors back up from the business logic
 'use strict'
 
 const bcrypt = require('bcrypt-promise')
-const fs = require('fs-extra')
-const mime = require('mime-types')
+//const fs = require('fs-extra')
+//const mime = require('mime-types')
 const sqlite = require('sqlite-async')
 const saltRounds = 10
 
