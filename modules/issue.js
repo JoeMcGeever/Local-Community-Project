@@ -14,18 +14,22 @@ module.exports = class Issue {
 		})()
 	}
 
-	async creation(id, status, userEmail, location, dateOfReport, description, priority) {
+	async creation(status, userEmail, location, description, priority) {
 		try {
+			//only email and location needs validating
+			let sql = `SELECT COUNT(id) as records FROM issue WHERE userEmail="${userEmail}";`
+			const data2 = await this.db.get(sql)
+			if(data2.records !== 0) throw new Error(`email "${userEmail}" is already in use`)
 
-
-
-
-
-			sql = `INSERT INTO issueid, status, userEmail, location, dateOfReport, description, priority) VALUES("${ID}", "${status}", "${userEmail}", "${location}", "${dateOfReport}", "${typeOfIssue}, ${description}, ${priority}")`
+			if(userEmail.length === 0) throw new Error('missing email')
+			if(location.length=== 0) throw new Error('missing location')
+			if((userEmail.match(/@/g)||[]).length!= 1) throw new Error('please enter a valid email')
+			const dateOfReport = "INSERT JS DATE THING HERE"
+			sql = `INSERT INTO issue (status, userEmail, location, dateOfReport, description, priority) VALUES("${status}", "${userEmail}", "${location}", "${dateOfReport}", "${description}", "${priority}")`
 			await this.db.run(sql)
 			return true
 		} catch(err) {
-			
+			throw err
 		}
 	}
 
