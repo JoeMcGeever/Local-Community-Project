@@ -15,21 +15,6 @@ describe('creation()', () => {
 		done()
 	})
 
-	test('location is invalid format - one number ', async done => {
-		//location should be a street name or 2 numbers in the format 'decimal, decimal'
-		expect.assertions(0)
-		const account = await new Issue()
-		await expect(account.creation('Completed', 'joeMcg@gmail.com', '250', 'Pothole', 'High')).rejects.toEqual(Error('Please enter a valid location. Street name or GPS'));
-		done()
-	})
-
-	test('location is not a valid street name', async done => {
-		expect.assertions(1)
-		const account = await new Issue()
-		await expect (account.creation('Completed', 'joeMcg@gmail.com', 'Binley Woods', 'Pothole', 'High'))
-		    .rejects.toEqual( Error('Please enter a valid location. Street name or GPS') )
-		done()
-	})
 
 	test('email is missing', async done => {
 		expect.assertions(1)

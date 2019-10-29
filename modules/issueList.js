@@ -14,7 +14,7 @@ module.exports = class Issue {
 		})()
 	}
 
-	async register(user, pass, address, postcode, ward, email) {
+	async create() {
 		try {
 
 		} catch(err) {
@@ -22,13 +22,5 @@ module.exports = class Issue {
 		}
 	}
 
-
-	async login(username, password) {
-		try {
-			
-		} catch(err) {
-			throw err
-		}
-	}
 
 }

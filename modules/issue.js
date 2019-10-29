@@ -17,14 +17,16 @@ module.exports = class Issue {
 	async creation(status, userEmail, location, description, priority) {
 		try {
 			//only email and location needs validating
-			let sql = `SELECT COUNT(id) as records FROM issue WHERE userEmail="${userEmail}";`
+		    let sql = `SELECT COUNT(id) as records FROM issue WHERE userEmail="${userEmail}";`
 			const data2 = await this.db.get(sql)
 			if(data2.records !== 0) throw new Error(`email "${userEmail}" is already in use`)
-
 			if(userEmail.length === 0) throw new Error('missing email')
 			if(location.length=== 0) throw new Error('missing location')
 			if((userEmail.match(/@/g)||[]).length!= 1) throw new Error('please enter a valid email')
-			const dateOfReport = "INSERT JS DATE THING HERE"
+		    //creates the month
+			var d = new Date()
+			const month = d.getMonth() + 1
+			const dateOfReport = d.getDate() + "/" + month + "/" + d.getFullYear()
 			sql = `INSERT INTO issue (status, userEmail, location, dateOfReport, description, priority) VALUES("${status}", "${userEmail}", "${location}", "${dateOfReport}", "${description}", "${priority}")`
 			await this.db.run(sql)
 			return true
@@ -33,13 +35,5 @@ module.exports = class Issue {
 		}
 	}
 
-
-	async login(username, password) {
-		try {
-			
-		} catch(err) {
-			throw err
-		}
-	}
 
 }

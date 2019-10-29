@@ -7,7 +7,7 @@
 'use strict'
 
 /* MODULE IMPORTS */
-const bcrypt = require('bcrypt-promise')
+
 const Koa = require('koa')
 const Router = require('koa-router')
 const views = require('koa-views')
@@ -50,7 +50,7 @@ router.get('/', async ctx => {
 		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=Please log in')
 		const data = {}
 		if(ctx.query.msg) data.msg = ctx.query.msg
-		await ctx.render('index')
+		await ctx.render('index', {name : "Joe!"})
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
 	}
@@ -95,8 +95,10 @@ router.get('/login', async ctx => {
 router.post('/login', async ctx => {
 	try {
 		const body = ctx.request.body
+		//THIS HERE SHOULD
 		const user = await new User(dbName)
 		await user.login(body.user, body.pass)
+		//SEND TO BUSINESS INSTEAD
 		ctx.session.authorised = true
 		return ctx.redirect('/?msg=you are now logged in...')
 	} catch(err) {

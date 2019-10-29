@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt-promise')
 //const fs = require('fs-extra')
 //const mime = require('mime-types')
 const sqlite = require('sqlite-async')
-const saltRounds = 10
+
 
 module.exports = class User {
 
@@ -12,14 +12,15 @@ module.exports = class User {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
 			// we need this table to store the user accounts
-			const sql = 'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, pass TEXT, address TEXT, postcode TEXT, ward INTEGER, email TEXT);'
+			const sql = 'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, pass TEXT, address TEXT, postcode TEXT, ward INTEGER, email TEXT, staff INTEGER);'
 			await this.db.run(sql)
 			return this
 		})()
 	}
 
-	async register(user, pass, address, postcode, ward, email) {
+	async register(user, pass, address, postcode, ward, email, staff) {
 		try {
+			//staff is either 1 or 0: 0 is normal user, 1 is a staff
 			if(user.length === 0) throw new Error('missing username')
 			if(pass.length === 0) throw new Error('missing password')
 			if(address.length === 0) throw new Error('missing address')
@@ -43,10 +44,10 @@ module.exports = class User {
 			//Checks to see if email is duplicate
 			sql = `SELECT COUNT(id) as records FROM users WHERE email="${email}";`
 			const data2 = await this.db.get(sql)
+
 			if(data2.records !== 0) throw new Error(`email "${email}" is already in use`)
 
-			pass = await bcrypt.hash(pass, saltRounds)
-			sql = `INSERT INTO users(user, pass, address, postcode, ward, email) VALUES("${user}", "${pass}", "${address}", "${postcode}", "${ward}", "${email}")`
+			sql = `INSERT INTO users(user, pass, address, postcode, ward, email, staff) VALUES("${user}", "${pass}", "${address}", "${postcode}", "${ward}", "${email}", "${staff}")`
 			await this.db.run(sql)
 			return true
 		} catch(err) {
@@ -62,12 +63,24 @@ module.exports = class User {
 			if(!records.count) throw new Error(`username "${username}" not found`)
 			sql = `SELECT pass FROM users WHERE user = "${username}";`
 			const record = await this.db.get(sql)
-			const valid = await bcrypt.compare(password, record.pass)
-			if(valid === false) throw new Error(`invalid password for account "${username}"`)
+			if(record.pass != password) throw new Error(`invalid password for account "${username}"`)
 			return true
 		} catch(err) {
 			throw err
 		}
 	}
 
+	async getEmail(username) {
+		if(username == '') throw new Error('no username given')
+		try{
+			let sql = `SELECT email FROM users WHERE user="${username}";`
+			const email = await this.db.get(sql)
+			if(email===undefined) throw new Error('no user with this email')
+			return email.email
+		} catch(err) {
+			throw err
+		}
+	}
+
 }
+
