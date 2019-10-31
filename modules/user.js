@@ -64,8 +64,6 @@ module.exports = class User {
 			sql = `SELECT pass FROM users WHERE user = "${username}";`
 			const record = await this.db.get(sql)
 
-
-			
 			var result = await bcrypt.compare(password, record.pass, function(err, res) {
 				if (err){
 					throw new Error(err)
