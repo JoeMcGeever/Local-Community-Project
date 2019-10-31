@@ -14,7 +14,7 @@ module.exports = class Issue {
 		})()
 	}
 
-	async create() {
+	async createList() { //based on priority, and nearby jobs
 		try {
 
 		} catch(err) {
