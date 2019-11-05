@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt-promise')
 //const fs = require('fs-extra')
 //const mime = require('mime-types')
 const sqlite = require('sqlite-async')
+const saltRounds= 10
 
 
 module.exports = class User {
@@ -46,6 +47,8 @@ module.exports = class User {
 			const data2 = await this.db.get(sql)
 
 			if(data2.records !== 0) throw new Error(`email "${email}" is already in use`)
+
+			pass = await bcrypt.hash(pass, saltRounds)
 
 			sql = `INSERT INTO users(user, pass, address, postcode, ward, email, staff) VALUES("${user}", "${pass}", "${address}", "${postcode}", "${ward}", "${email}", "${staff}")`
 			await this.db.run(sql)
