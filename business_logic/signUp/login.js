@@ -27,13 +27,10 @@ module.exports = class login {
     async login(user, pass) {
 
         try {
-            //const loginUser = await new User(dbName)
+
             const loginUser = await new User(dbName)
 
-            //if login successful, redirect. Else -> dont
-
             return loginUser.login(user, pass)
-            //redirect here
         } catch(err) {
             throw err
         }
