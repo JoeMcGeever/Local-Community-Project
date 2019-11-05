@@ -20,8 +20,6 @@ const fs = require('fs-extra')
 const mime = require('mime-types')
 //const jimp = require('jimp')
 
-/* IMPORT CUSTOM MODULES */
-const user = require('./modules/signUp/user')
 
 const app = new Koa()
 const router = new Router()
@@ -32,6 +30,9 @@ app.use(staticDir('public'))
 app.use(bodyParser())
 app.use(session(app))
 app.use(views(`${__dirname}/views`, { extension: 'handlebars' }, {map: { handlebars: 'handlebars' }}))
+
+/* IMPORT CUSTOM MODULES */
+const User = require('./modules/user')
 
 const defaultPort = 8080
 const port = process.env.PORT || defaultPort
@@ -77,7 +78,7 @@ router.post('/registerPost', koaBody, async ctx => {
 		console.log(body)
 
 		// call the functions in the module
-		const user = await new user(dbName)
+		const user = await new User(dbName)
 		await user.register(body.user, body.pass, body.address, body.postcode, body.ward, body.email)
 		ctx.redirect(`/?msg=new user "${body.name}" added`)
 	} catch(err) {
@@ -96,7 +97,7 @@ router.post('/login', async ctx => {
 	try {
 		const body = ctx.request.body
 		//THIS HERE SHOULD
-		const user = await new user(dbName)
+		const user = await new User(dbName)
 		await user.login(body.user, body.pass)
 		//SEND TO BUSINESS INSTEAD
 		ctx.session.authorised = true
