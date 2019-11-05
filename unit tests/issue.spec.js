@@ -10,7 +10,7 @@ describe('creation()', () => {
 	test('create a valid issue', async done => {
 		expect.assertions(1)
 		const account = await new Issue()
-		const create = await account.creation('Completed', 'joeMcg@gmail.com', '23, 15', 'Pothole', 'High')
+		const create = await account.creation('joeMcg@gmail.com', '23, 15', 'Pothole')
         expect(create).toBe(true)
 		done()
 	})
@@ -19,7 +19,7 @@ describe('creation()', () => {
 	test('email is missing', async done => {
 		expect.assertions(1)
 		const account = await new Issue()
-		await expect (account.creation('Completed', '', '23, 15', 'Pothole', 'High'))
+		await expect (account.creation("", '23, 15', 'Pothole'))
 		    .rejects.toEqual( Error('missing email') )
 		done()
 	})
@@ -27,7 +27,7 @@ describe('creation()', () => {
 	test('location is missing', async done => {
 		expect.assertions(1)
 		const account = await new Issue()
-		await expect (account.creation('Completed', 'joeMcg@gmail.com', '', 'Pothole', 'High'))
+		await expect (account.creation('joeMcg@gmail.com', '', 'Pothole'))
 			.rejects.toEqual( Error('missing location') )
 		done()
 	})

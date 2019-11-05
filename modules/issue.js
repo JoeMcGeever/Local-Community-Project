@@ -14,7 +14,9 @@ module.exports = class Issue {
 		})()
 	}
 
-	async creation(status, userEmail, location, description, priority) {
+	async creation(userEmail, location, description) {
+		const priority = 0
+		const status = "reported"
 		try {
 			//only email and location needs validating
 		    let sql = `SELECT COUNT(id) as records FROM issue WHERE userEmail="${userEmail}";`
