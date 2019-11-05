@@ -64,7 +64,10 @@ describe('updateJobStatus()', () => {
 		done()
 	})
 
-	test('update status to resolved', async done => {
+	test('update status to resolved', async done => { //NOTE: USE THIS STATUS UPDATE FOR OTHER TESTS
+		//TO CHECK TO SEE IF DATE OF COMPLETION IS CORRECT
+		//TO SEE IF RESOLVED - AND THEREFORE SHOULDNT BE SENT TO JOB LIST
+		//SEEN BY USERS TO VOTE ETC
 		expect.assertions(1)
 		const account = await new Issue()
 		await account.addIssue('josephmcgeever@hotmail.co.uk', '23, 15', 'Pothole') //using my email so I can check an actual email is sent

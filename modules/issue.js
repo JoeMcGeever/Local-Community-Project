@@ -8,7 +8,7 @@ module.exports = class Issue {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
 			// we need this table to store the user accounts
-			const sql = 'CREATE TABLE IF NOT EXISTS issue (id INTEGER PRIMARY KEY AUTOINCREMENT, status TEXT, userEmail TEXT, location TEXT, dateOfReport TEXT, description TEXT, priority TEXT);'
+			const sql = 'CREATE TABLE IF NOT EXISTS issue (id INTEGER PRIMARY KEY AUTOINCREMENT, status TEXT, userEmail TEXT, location TEXT, dateOfReport TEXT, dateOfCompletion TEXT, description TEXT, priority TEXT);'
 			await this.db.run(sql)
 			return this
 		})()
@@ -43,11 +43,16 @@ module.exports = class Issue {
 	//issueID should be sent to and fro these layers anyway
 	try {
 		let sql = `UPDATE issue SET status = "${status}" WHERE id = "${issueID}";`
-		await this.db.get(sql)
+		await this.db.run(sql)
 		if(status == "Resolved"){
+			var d = new Date()
+			const month = d.getMonth() + 1
+			const dateOfCompletion = d.getDate() + "/" + month + "/" + d.getFullYear()
+			sql = `UPDATE issue SET dateOfCompletion = "${dateOfCompletion}" WHERE id = "${issueID}";`
+			await this.db.run(sql)
+
 			sql = `SELECT userEmail, description, location FROM issue WHERE id = "${issueID}";`
 			let userDetails = await this.db.get(sql)
-
 
 			let userEmail = userDetails.userEmail //cant remember how to get individual data
 			let description = userDetails.description
