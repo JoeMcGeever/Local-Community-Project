@@ -76,3 +76,67 @@ describe('updateJobStatus()', () => {
 
 })
 
+
+describe('voteForIssue()', () => { 
+
+	test('Vote for an issue correctly', async done => {
+		expect.assertions(1)
+		const account = await new Issue()
+		await account.addIssue("userEmail", "location", "description")
+		const update = await account.voteForIssue(1)
+		expect(update).toBe(true)
+		done()
+	})
+
+})
+
+describe('viewIssueBy()', () => { 
+
+	test('Return issues which are filtered by reported ', async done => {
+		expect.assertions(1)
+		const account = await new Issue()
+		await account.addIssue("first", "24, 23", "reported")
+		await account.addIssue("second", "23, 56", "allocated")
+		await account.addIssue("third", "22, 0", "reported")
+		await account.updateJobStatus(2, "allocated")
+		const issues = await account.viewIssueBy("reported")
+		expect(issues.length).toBe(2)
+		done()
+	})
+
+	test('Return issues which are filtered by allocated ', async done => {
+		expect.assertions(1)
+		const account = await new Issue()
+		await account.addIssue("first", "24, 23", "reported")
+		await account.addIssue("second", "23, 56", "reported")
+		await account.addIssue("third", "22, 0", "allocated")
+		await account.updateJobStatus(3, "allocated")
+		const issues = await account.viewIssueBy("allocated")
+		expect(issues.length).toBe(1)
+		done()
+	})
+
+	test('Return issues which are filtered by resolved ', async done => {
+		expect.assertions(1)
+		const account = await new Issue()
+		await account.addIssue("first", "24, 23", "resolved")
+		await account.addIssue("second", "23, 56", "resolved")
+		await account.addIssue("third", "22, 0", "resolved")
+		await account.updateJobStatus(1, "resolved")
+		await account.updateJobStatus(2, "resolved")
+		await account.updateJobStatus(3, "resolved")
+		const issues = await account.viewIssueBy("resolved")
+		expect(issues.length).toBe(3)
+		done()
+	})
+
+	test('No problems are currently resolved', async done => {
+		expect.assertions(1)
+		const account = await new Issue()
+		await account.addIssue("first", "24, 23", "reported")
+		await expect (account.viewIssueBy("resolved"))
+			.rejects.toEqual( Error('No current problems are set to resolved') )
+		done()
+	})
+
+})

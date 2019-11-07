@@ -15,7 +15,7 @@ module.exports = class Issue {
 	}
 
 	async addIssue(userEmail, location, description) {
-		const priority = "Low"
+		const priority = 0
 		const status = "reported"
 		try {
 			//only email and location needs validating
@@ -60,7 +60,7 @@ module.exports = class Issue {
 
 
 			//GET RID OF THIS
-			//return true //HERE JUST SO I DON'T USE UP MY EMAIL SENDING LIMIT
+			return true //HERE JUST SO I DON'T USE UP MY EMAIL SENDING LIMIT
 			//GET RID OF THIS
 
 
@@ -80,14 +80,35 @@ module.exports = class Issue {
 
 	}
 
-	async viewIssue(location){ //gets all issues filtered by user location 
+	async viewIssueBy (status){ //gets all issues filtered by user location 
 		//show number of days since raised / days it took to resolve
 		//ensure issueID is sent also
+		let sql = `SELECT * FROM issue WHERE status = "${status}";`
+		const data = await this.db.all(sql)
+
+		if(data.length ==0) throw new Error(`No current problems are set to ${status}`)
+		if(status == 'resolved'){
+			return data
+		} else {
+			//edit the days until resolved
+			return data
+		}
 	}
 
 	async voteForIssue(issueID){ //will update the priority of an issue by the numberOfVotes
 		//if priority is a number spanning from low-medium-high (after 10 votes, put up)
 		//can only be voted for if status == reported
+		let sql = `SELECT priority FROM issue WHERE id = "${issueID}";`
+
+		let currentNumber = await this.db.get(sql)
+		currentNumber = Number(currentNumber.priority) + 1
+
+		sql = `UPDATE issue SET priority = "${currentNumber}" WHERE id = "${issueID}";`
+		await this.db.run(sql)
+
+
+		return true
+
 
 	}
 

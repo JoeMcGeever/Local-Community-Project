@@ -28,7 +28,7 @@ module.exports = class User {
 			if(pass.length === 0) throw new Error('missing password')
 			if(address.length === 0) throw new Error('missing address')
 			if(postcode.length === 0) throw new Error('missing postcode')
-			if(ward.length === 0) throw new Error('missing length')
+			if(ward == null) throw new Error('missing ward')
 			if(email.length === 0) throw new Error('missing email')
 			if(isNaN(ward)) throw new Error ('your ward should be a number')
 			//email cannot be duplicate
@@ -72,13 +72,8 @@ module.exports = class User {
 
 			const record = await this.db.get(sql)
 
-			var result = await bcrypt.compare(password, record.pass, function(err, res) {
-				if (err){
-					throw new Error(err)
-				}
-				if (res){
-				  return true
-				}})
+			var result = await bcrypt.compare(password, record.pass, function(err, res) { //login with bad password
+			})
 
 			if(!result){
 				throw new Error(`invalid password for account "${username}"`)
