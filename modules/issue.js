@@ -72,7 +72,7 @@ module.exports = class Issue {
             from: 'localcommunity@304.co.uk',
             subject: 'Your issue has been resolved!',
             text: 'Your issue has been resolved!',
-            html: `<strong> The issue: "${description}" at "${location}" has been resolved. Sent to: "${userEmail}"</strong>`,
+            html: `<strong> The issue: "${description}" at "${location}" has been resolved. Sent to: "${userEmail}". FUCK YOU JAZZ BUGG</strong>`,
         };
             sgMail.send(msg);
 		}

@@ -151,7 +151,7 @@ describe('getEmail()', () => {
 		const account = await new Accounts()
 		await account.register('doej', 'password', '28 Bonley Road', '2RE', 24, 'mcg@uni.com', 0)
 		await expect( account.getEmail('dosssssssss') )
-			.rejects.toEqual( Error('no user with this email') )
+			.rejects.toEqual( Error('no email with this user') )
 		done()
 	})
 

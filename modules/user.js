@@ -10,6 +10,7 @@ const saltRounds= 10
 module.exports = class User {
 
 	constructor(dbName = ':memory:') {
+		this.userEmail = "" //to be saved + set in this class
 		return (async() => {
 			this.db = await sqlite.open(dbName)
 			// we need this table to store the user accounts
@@ -19,6 +20,7 @@ module.exports = class User {
 		})()
 	}
 
+	
 	async register(user, pass, address, postcode, ward, email, staff) {
 		try {
 			//staff is either 1 or 0: 0 is normal user, 1 is a staff
@@ -65,7 +67,6 @@ module.exports = class User {
 			const records = await this.db.get(sql)
 			if(!records.count) throw new Error(`username "${username}" not found`)
 
-
 			sql = `SELECT pass FROM users WHERE user = "${username}";`
 
 
@@ -89,12 +90,12 @@ module.exports = class User {
 		}
 	}
 
-	async getEmail(username) {
+	async getEmail(username) { //DONT THINK I NEED
 		if(username == '') throw new Error('no username given')
 		try{
 			let sql = `SELECT email FROM users WHERE user="${username}";`
 			const email = await this.db.get(sql)
-			if(email===undefined) throw new Error('no user with this email')
+			if(email===undefined) throw new Error('no email with this user')
 			return email.email
 		} catch(err) {
 			throw err
