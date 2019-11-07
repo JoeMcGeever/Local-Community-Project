@@ -19,17 +19,18 @@ module.exports = class Issue {
 		const status = "reported"
 		try {
 			//only email and location needs validating
-		    let sql = `SELECT COUNT(id) as records FROM issue WHERE userEmail="${userEmail}";`
-			const data2 = await this.db.get(sql)
-			if(data2.records !== 0) throw new Error(`email "${userEmail}" is already in use`)
+		   // let sql = `SELECT COUNT(id) as records FROM issue WHERE userEmail="${userEmail}";`
+			//const data2 = await this.db.get(sql)
+		//	if(data2.records !== 0) throw new Error(`email "${userEmail}" is already in use`)
 			if(userEmail.length === 0) throw new Error('missing email')
 			if(location.length=== 0) throw new Error('missing location')
-			if((userEmail.match(/@/g)||[]).length!= 1) throw new Error('please enter a valid email')
+			if(description.length === 0)throw new Error('missing description')
+			//if((userEmail.match(/@/g)||[]).length!= 1) throw new Error('please enter a valid email')
 		    //creates the month
 			var d = new Date()
 			const month = d.getMonth() + 1
 			const dateOfReport = d.getDate() + "/" + month + "/" + d.getFullYear()
-			sql = `INSERT INTO issue (status, userEmail, location, dateOfReport, description, priority) VALUES("${status}", "${userEmail}", "${location}", "${dateOfReport}", "${description}", "${priority}")`
+			let sql = `INSERT INTO issue (status, userEmail, location, dateOfReport, description, priority) VALUES("${status}", "${userEmail}", "${location}", "${dateOfReport}", "${description}", "${priority}")`
 			await this.db.run(sql)
 			return true
 		} catch(err) {
@@ -41,7 +42,6 @@ module.exports = class Issue {
 	//note -> if set to resolved, the user who flagged it should be sent an email
 	//status update should be a drop down option of Reported, Resolved, Allocated
 	//issueID should be sent to and fro these layers anyway
-	try {
 		let sql = `UPDATE issue SET status = "${status}" WHERE id = "${issueID}";`
 		await this.db.run(sql)
 		if(status == "Resolved"){
@@ -60,7 +60,7 @@ module.exports = class Issue {
 
 
 			//GET RID OF THIS
-			return true //HERE JUST SO I DON'T USE UP MY EMAIL SENDING LIMIT
+			//return true //HERE JUST SO I DON'T USE UP MY EMAIL SENDING LIMIT
 			//GET RID OF THIS
 
 
@@ -72,14 +72,12 @@ module.exports = class Issue {
             from: 'localcommunity@304.co.uk',
             subject: 'Your issue has been resolved!',
             text: 'Your issue has been resolved!',
-            html: `<strong> The issue: "${description}" at "${location}" has been resolved. Sent to: "${userEmail}". FUCK YOU JAZZ BUGG</strong>`,
+            html: `<strong> The issue: "${description}" at "${location}" has been resolved. Sent to: "${userEmail}".</strong>`,
         };
             sgMail.send(msg);
 		}
 		return true
-	} catch(err) {
-		throw err
-	    }
+
 	}
 
 	async viewIssue(location){ //gets all issues filtered by user location 

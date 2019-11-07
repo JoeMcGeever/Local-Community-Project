@@ -32,24 +32,14 @@ describe('addIssue()', () => {
 		done()
 	})
 
-
-	test('email is incorrect format (without @ symbol)', async done => {
+	test('Description is missing', async done => {
 		expect.assertions(1)
 		const account = await new Issue()
-		await expect (account.addIssue('Completed', 'joeMcggmail.com', '23, 15', 'Pothole', 'High'))
-		    .rejects.toEqual( Error('please enter a valid email') )
+		await expect (account.addIssue('joeMcg@gmail.com', '23, 15', ''))
+			.rejects.toEqual( Error('missing description') )
 		done()
 	})
 
-	
-	test('email is incorrect format (with 2 @ symbols)', async done => {
-		expect.assertions(1)
-		const account = await new Issue()
-		//console.log(typeof(account))
-		await expect (account.addIssue('Completed', 'joe@@Mcggmail.com', '23, 15', 'Pothole', 'High'))
-		    .rejects.toEqual( Error('please enter a valid email') )
-		done()
-	})
 })
 
 
@@ -69,7 +59,7 @@ describe('updateJobStatus()', () => {
 		//TO SEE IF RESOLVED - AND THEREFORE SHOULDNT BE ABLE TO VOTE
 		expect.assertions(1)
 		const account = await new Issue()
-		await account.addIssue('josephmcgeever@hotmail.co.uk', '23, 15', 'Pothole') //using my email so I can check an actual email is sent
+		await account.addIssue('mcgeevej@uni.coventry.ac.uk', '23, 15', 'Pothole') //using my email so I can check an actual email is sent
 		const update = await  account.updateJobStatus(1, "Resolved")
 		expect(update).toBe(true)
 		done()
