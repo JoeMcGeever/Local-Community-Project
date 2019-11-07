@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Issues</title>
+	<link href="css/style.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+
+    <p><a href="/viewIssues/resolved">Resolved Issues</a></p>
+    <p><a href="/viewIssues/reported">Reported Issues</a></p>
+    <p><a href="/viewIssues/allocated">Allocated Issues</a></p>
+	<header>
+		<h1>{{title}}</h1>
+	</header>
+	<p>Issues:</p>
+	<ul>
+	{{#each issues}}
+	<li>{{this.id}}, {{this.status}}, {{this.description}}, {{this.location}}, {{this.dateOfReport}}, {{priority}}</li>
+	{{/each}}
+	</ul>
+</body>
+</html>

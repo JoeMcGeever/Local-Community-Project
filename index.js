@@ -138,5 +138,17 @@ router.post('/addIssue', async ctx => {
 	}
 })
 
+router.get('/viewIssues/:status', async ctx =>{
+	try {
+	    const status = ctx.params.status
+		const issue = await new Issue(dbNameIssue)
+		let issueArray = await issue.viewIssueBy(status)
+	    await ctx.render('viewIssues', {issues: issueArray})
+	} catch(err) {
+		await ctx.render('error', {message: err.message})
+	}
+	
+})
+
 app.use(router.routes())
 module.exports = app.listen(port, async() => console.log(`listening on port ${port}`))
