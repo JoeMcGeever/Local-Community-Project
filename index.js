@@ -33,22 +33,24 @@ app.use(views(`${__dirname}/views`, { extension: 'handlebars' }, {map: { handleb
 
 /* IMPORT CUSTOM MODULES */
 const User = require('./modules/user')
+const Issue = require('./modules/issue')
 
 const defaultPort = 8080
 const port = process.env.PORT || defaultPort
 const dbName = 'website.db'
+const dbNameIssue = 'issue.db'
 const saltRounds = 10
 
 /**
  * The secure home page.
  *
  * @name Home Page
- * @route {GET} /
+ * @route {GET} 
  * @authentication This route requires cookie-based authentication.
  */
 router.get('/', async ctx => {
 	try {
-		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=Please log in')
+		if(ctx.session.authorised == null) return ctx.redirect('/login?msg=Please log in')
 		const data = {}
 		if(ctx.query.msg) data.msg = ctx.query.msg
 		await ctx.render('index', {name : "Joe!"})
@@ -96,11 +98,12 @@ router.get('/login', async ctx => {
 router.post('/login', async ctx => {
 	try {
 		const body = ctx.request.body
-		//THIS HERE SHOULD
 		const user = await new User(dbName)
 		await user.login(body.user, body.pass)
-		//SEND TO BUSINESS INSTEAD
-		ctx.session.authorised = true
+		ctx.session.authorised = true      
+		ctx.session.username = body.user //save the username in ctx.session.username
+
+
 		return ctx.redirect('/?msg=you are now logged in...')
 	} catch(err) {
 		await ctx.render('error', {message: err.message})
@@ -109,7 +112,45 @@ router.post('/login', async ctx => {
 
 router.get('/logout', async ctx => {
 	ctx.session.authorised = null
+	ctx.session.username = null
 	ctx.redirect('/?msg=you are now logged out')
+})
+
+router.get('/addIssue', async ctx => {
+	if(ctx.session.authorised == null) return ctx.redirect('/login?msg=Please log in')
+	await ctx.render('addIssue')
+})
+
+router.post('/addIssue', async ctx => {
+	try {
+		if(ctx.session.authorised === null)	throw new Error("Please log in")
+		const body = ctx.request.body
+		const location = body.location
+		const description = body.description
+		const username = ctx.session.username //saved when the user logs in in ctx.session.username
+
+		const user = await new User(dbName)
+		const userEmail = await user.getEmail(username)
+		
+		const issue = await new Issue(dbNameIssue)
+		await issue.addIssue(userEmail, location, description)
+		return ctx.redirect('/?msg=issue created')
+	} catch(err) {
+		await ctx.render('error', {message: err.message})
+	}
+})
+
+router.get('/viewIssues/:status', async ctx =>{
+	if(ctx.session.authorised == null) return ctx.redirect('/login?msg=Please log in')
+	try {
+	    const status = ctx.params.status
+		const issue = await new Issue(dbNameIssue)
+		let issueArray = await issue.viewIssueBy(status)
+	    await ctx.render('viewIssues', {issues: issueArray})
+	} catch(err) {
+		await ctx.render('error', {message: err.message})
+	}
+	
 })
 
 app.use(router.routes())

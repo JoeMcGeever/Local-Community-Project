@@ -10,6 +10,7 @@ const saltRounds= 10
 module.exports = class User {
 
 	constructor(dbName = ':memory:') {
+		this.userEmail = "" //to be saved + set in this class
 		return (async() => {
 			this.db = await sqlite.open(dbName)
 			// we need this table to store the user accounts
@@ -19,6 +20,7 @@ module.exports = class User {
 		})()
 	}
 
+	
 	async register(user, pass, address, postcode, ward, email, staff) {
 		try {
 			//staff is either 1 or 0: 0 is normal user, 1 is a staff
@@ -26,7 +28,7 @@ module.exports = class User {
 			if(pass.length === 0) throw new Error('missing password')
 			if(address.length === 0) throw new Error('missing address')
 			if(postcode.length === 0) throw new Error('missing postcode')
-			if(ward.length === 0) throw new Error('missing length')
+			if(ward == null) throw new Error('missing ward')
 			if(email.length === 0) throw new Error('missing email')
 			if(isNaN(ward)) throw new Error ('your ward should be a number')
 			//email cannot be duplicate
@@ -65,19 +67,13 @@ module.exports = class User {
 			const records = await this.db.get(sql)
 			if(!records.count) throw new Error(`username "${username}" not found`)
 
-
 			sql = `SELECT pass FROM users WHERE user = "${username}";`
 
 
 			const record = await this.db.get(sql)
 
-			var result = await bcrypt.compare(password, record.pass, function(err, res) {
-				if (err){
-					throw new Error(err)
-				}
-				if (res){
-				  return true
-				}})
+			var result = await bcrypt.compare(password, record.pass, function(err, res) { //login with bad password
+			})
 
 			if(!result){
 				throw new Error(`invalid password for account "${username}"`)
@@ -89,12 +85,12 @@ module.exports = class User {
 		}
 	}
 
-	async getEmail(username) {
+	async getEmail(username) { //DONT THINK I NEED
 		if(username == '') throw new Error('no username given')
 		try{
 			let sql = `SELECT email FROM users WHERE user="${username}";`
 			const email = await this.db.get(sql)
-			if(email===undefined) throw new Error('no user with this email')
+			if(email===undefined) throw new Error('no email with this user')
 			return email.email
 		} catch(err) {
 			throw err

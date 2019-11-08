@@ -56,11 +56,19 @@ describe('register()', () => {
 		done()
 	})
 
-	test('error if blank poscode', async done => {
+	test('error if blank postcode', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()
 		await expect( account.register('doej', 'password', '28 Bonley Road', '', 24, 'mcg@uni.com', 0) )
 			.rejects.toEqual( Error('missing postcode') )
+		done()
+	})
+
+	test('error if blank ward', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await expect( account.register('doej', 'password', '28 Bonley Road', 'R4E', null, 'mcg@uni.com', 0) )
+			.rejects.toEqual( Error('missing ward') )
 		done()
 	})
 
@@ -111,7 +119,15 @@ describe('register()', () => {
 
 
 describe('login()', () => {
-	//removed valid login as hashing is involved at business layer
+	
+	test('valid login', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await account.register('doej', 'password', '28 Bonley Road', '2RE', 24, 'mcg@uni.com', 0)
+		const validLogin = await account.login('doej', 'password') 
+		expect(validLogin).toBe(true)
+		done()
+	})
 
 	test('invalid username', async done => {
 		expect.assertions(1)
@@ -151,7 +167,7 @@ describe('getEmail()', () => {
 		const account = await new Accounts()
 		await account.register('doej', 'password', '28 Bonley Road', '2RE', 24, 'mcg@uni.com', 0)
 		await expect( account.getEmail('dosssssssss') )
-			.rejects.toEqual( Error('no user with this email') )
+			.rejects.toEqual( Error('no email with this user') )
 		done()
 	})
 
