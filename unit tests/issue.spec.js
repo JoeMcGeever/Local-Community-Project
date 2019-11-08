@@ -92,6 +92,20 @@ describe('voteForIssue()', () => {
 
 describe('viewIssueBy()', () => { 
 
+
+	test('Return all issues ', async done => {
+		expect.assertions(1)
+		const account = await new Issue()
+		await account.addIssue("first", "24, 23", "reported")
+		await account.addIssue("second", "23, 56", "allocated")
+		await account.addIssue("third", "22, 0", "reported")
+		await account.updateJobStatus(2, "allocated")
+		const issues = await account.viewIssueBy("all")
+		expect(issues.length).toBe(3)
+		done()
+	})
+
+
 	test('Return issues which are filtered by reported ', async done => {
 		expect.assertions(1)
 		const account = await new Issue()

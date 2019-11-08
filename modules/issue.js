@@ -84,6 +84,10 @@ module.exports = class Issue {
 		//show number of days since raised / days it took to resolve
 		//ensure issueID is sent also
 		let sql = `SELECT * FROM issue WHERE status = "${status}";`
+		if(status == 'all') {
+			sql = `SELECT * FROM issue;`
+		}
+		
 		const data = await this.db.all(sql)
 
 		if(data.length ==0) throw new Error(`No current problems are set to ${status}`)

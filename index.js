@@ -50,7 +50,7 @@ const saltRounds = 10
  */
 router.get('/', async ctx => {
 	try {
-		if(ctx.session.authorised !== true) return ctx.redirect('/login?msg=Please log in')
+		if(ctx.session.authorised == null) return ctx.redirect('/login?msg=Please log in')
 		const data = {}
 		if(ctx.query.msg) data.msg = ctx.query.msg
 		await ctx.render('index', {name : "Joe!"})
@@ -112,16 +112,18 @@ router.post('/login', async ctx => {
 
 router.get('/logout', async ctx => {
 	ctx.session.authorised = null
+	ctx.session.username = null
 	ctx.redirect('/?msg=you are now logged out')
 })
 
 router.get('/addIssue', async ctx => {
+	if(ctx.session.authorised == null) return ctx.redirect('/login?msg=Please log in')
 	await ctx.render('addIssue')
 })
 
 router.post('/addIssue', async ctx => {
 	try {
-		if(ctx.session.authorised != true) await ctx.render('error', {message: "Please log in"})
+		if(ctx.session.authorised === null)	throw new Error("Please log in")
 		const body = ctx.request.body
 		const location = body.location
 		const description = body.description
@@ -139,6 +141,7 @@ router.post('/addIssue', async ctx => {
 })
 
 router.get('/viewIssues/:status', async ctx =>{
+	if(ctx.session.authorised == null) return ctx.redirect('/login?msg=Please log in')
 	try {
 	    const status = ctx.params.status
 		const issue = await new Issue(dbNameIssue)
