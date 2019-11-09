@@ -114,12 +114,10 @@ module.exports = class Issue {
 			currentDate = new Date(currentDate)
 			if(data[i].dateOfCompletion == null){ //if not yet completed
 				// To calculate the time difference of two dates 
-
 				differenceInTime = Math.abs(currentDate.getTime() - reportDate.getTime()) 
 				// To calculate the no. of days between two dates 
-				//return Math.ceil(differenceInTime / (1000 * 60 * 60 * 24))
 				daysElapsed = differenceInTime / (1000 * 3600 * 24);
-				data[i].dateOfCompletion = Math.round(daysElapsed) //corretc but report date isnt
+				data[i].dateOfCompletion = Math.round(daysElapsed)
 			} else {
 				completionDate = data[i].dateOfCompletion
 				// To calculate the time difference of two dates 
@@ -131,8 +129,6 @@ module.exports = class Issue {
 		}
 
 		return data
-		//edit the days until resolved --> do current(days + months * days + years * days) - dB(days + months * days + years * days)
-		//use split('/')
 	}
 
 	async voteForIssue(issueID){ //will update the priority of an issue by the numberOfVotes

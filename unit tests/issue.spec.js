@@ -159,7 +159,43 @@ describe('viewIssueBy()', () => {
 		await account.addIssue("first", "24, 23", "resolved", "1/11/2019")
 		await account.updateJobStatus(0, "resolved") // resolved today, so should = 8
 		const issues = await account.viewIssueBy("all")
-		expect(issues[0].dateOfCompletion).toBe(8)
+
+
+		let reportDate = new Date("11/1/2019") //US format
+		let currentDate = new Date()
+		currentDate = currentDate.toLocaleDateString("en-US")
+		currentDate = new Date(currentDate)
+		// To calculate the time difference of two dates 
+		let differenceInTime = Math.abs(currentDate.getTime() - reportDate.getTime()) 
+		// To calculate the no. of days between two dates 
+		let daysElapsed = differenceInTime / (1000 * 3600 * 24);
+		daysElapsed = Math.round(daysElapsed)
+
+
+
+		expect(issues[0].dateOfCompletion).toBe(daysElapsed)
+		//issues[0].dateOfCompletion == 0
+		done()
+	})
+
+	test('Days elapsed since reported for not yet resolved issue', async done => {
+		expect.assertions(1)
+		const account = await new Issue()
+		await account.addIssue("first", "24, 23", "resolved", "5/10/2019") // resolved today, so should = 8
+		const issues = await account.viewIssueBy("all")
+
+		let reportDate = new Date("10/5/2019") //US format
+		let currentDate = new Date()
+		currentDate = currentDate.toLocaleDateString("en-US")
+		currentDate = new Date(currentDate)
+		// To calculate the time difference of two dates 
+		let differenceInTime = Math.abs(currentDate.getTime() - reportDate.getTime()) 
+		// To calculate the no. of days between two dates 
+		let daysElapsed = differenceInTime / (1000 * 3600 * 24);
+		daysElapsed = Math.round(daysElapsed)
+
+
+		expect(issues[0].dateOfCompletion).toBe(daysElapsed)
 		//issues[0].dateOfCompletion == 0
 		done()
 	})
