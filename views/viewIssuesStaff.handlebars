@@ -1,0 +1,24 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Issues but for (staff)</title>
+	<link href="css/style.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+
+    <p><a href="/viewIssuesStaff/all">All Issues</a></p>
+    <p><a href="/viewIssuesStaff/resolved">Resolved Issues</a></p>
+    <p><a href="/viewIssuesStaff/reported">Reported Issues</a></p>
+    <p><a href="/viewIssuesStaff/allocated">Allocated Issues</a></p>
+	<header>
+		<h1>{{title}}</h1>
+	</header>
+	<p>Issues:</p>
+	<ul>
+	{{#each issues}}
+	<li>{{this.id}}, {{this.status}}, {{this.description}}, {{this.location}}, {{this.dateOfReport}}, {{priority}}</li>
+	{{/each}}
+	</ul>
+</body>
+</html>

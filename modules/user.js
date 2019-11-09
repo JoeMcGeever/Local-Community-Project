@@ -21,7 +21,7 @@ module.exports = class User {
 	}
 
 	
-	async register(user, pass, address, postcode, ward, email, staff) {
+	async register(user, pass, address, postcode, ward, email) {
 		try {
 			//staff is either 1 or 0: 0 is normal user, 1 is a staff
 			if(user.length === 0) throw new Error('missing username')
@@ -51,7 +51,8 @@ module.exports = class User {
 			if(data2.records !== 0) throw new Error(`email "${email}" is already in use`)
 
 			pass = await bcrypt.hash(pass, saltRounds)
-
+			const staff = 0 // 0 represents a local, 1 a staff. 
+			//Existing staff have the option of upgrading a "local" to a staff
 			sql = `INSERT INTO users(user, pass, address, postcode, ward, email, staff) VALUES("${user}", "${pass}", "${address}", "${postcode}", "${ward}", "${email}", "${staff}")`
 			await this.db.run(sql)
 			return true
@@ -95,6 +96,25 @@ module.exports = class User {
 		} catch(err) {
 			throw err
 		}
+	}
+
+	async upgradeToStaff(username) {
+		if(username == '') throw new Error('no username given')
+		let sql = `SELECT staff FROM users WHERE user="${username}";`
+		const isStaff = await this.db.get(sql)
+		if(isStaff===undefined) throw new Error('no user found')
+		if(isStaff.staff==1) throw new Error('user is already staff!')
+		sql = `UPDATE users SET staff = 1 WHERE user = "${username}";`
+		await this.db.run(sql)
+		return true
+	}
+
+	async isStaff(username) {
+		if(username == '') throw new Error('no username given')
+		let sql = `SELECT staff FROM users WHERE user="${username}";` //correct sql
+		const staff = await this.db.get(sql)
+		if (staff === undefined) throw new Error ('no user found')
+		return staff.staff
 	}
 
 }

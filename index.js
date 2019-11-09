@@ -146,8 +146,17 @@ router.get('/viewIssues/:status', async ctx =>{
 	    const status = ctx.params.status
 		const issue = await new Issue(dbNameIssue)
 		let issueArray = await issue.viewIssueBy(status)
-	    await ctx.render('viewIssues', {issues: issueArray})
-	} catch(err) {
+
+		const user = await new User(dbName)
+		const username = ctx.session.username
+		const staff = await user.isStaff(username)
+		console.log(staff)
+	    if(staff == 1 ){
+		    await ctx.render('viewIssuesStaff', {issues: issueArray})
+	        } else {
+			await ctx.render('viewIssues', {issues: issueArray})
+		}
+	    } catch(err) {
 		await ctx.render('error', {message: err.message})
 	}
 	
