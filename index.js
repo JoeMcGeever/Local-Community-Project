@@ -133,7 +133,7 @@ router.post('/addIssue', async ctx => {
 		const userEmail = await user.getEmail(username)
 		
 		const issue = await new Issue(dbNameIssue)
-		await issue.addIssue(userEmail, location, description)
+		await issue.addIssue(userEmail, location, description, null) //nullis to represent dateOfReport -- this is only needed for testing and will always be null
 		return ctx.redirect('/?msg=issue created')
 	} catch(err) {
 		await ctx.render('error', {message: err.message})

@@ -14,7 +14,7 @@ module.exports = class Issue {
 		})()
 	}
 
-	async addIssue(userEmail, location, description) {
+	async addIssue(userEmail, location, description, dateOfCompletion) {
 		const priority = 0
 		const status = "reported"
 		try {
@@ -30,7 +30,12 @@ module.exports = class Issue {
 			var d = new Date()
 			const month = d.getMonth() + 1
 			const dateOfReport = d.getDate() + "/" + month + "/" + d.getFullYear()
-			let sql = `INSERT INTO issue (status, userEmail, location, dateOfReport, description, priority) VALUES("${status}", "${userEmail}", "${location}", "${dateOfReport}", "${description}", "${priority}")`
+			let sql
+			if(dateOfCompletion !== null){
+				sql = `INSERT INTO issue (status, userEmail, location, dateOfReport, description, priority, dateofCompletion) VALUES("${status}", "${userEmail}", "${location}", "${dateOfReport}", "${description}", "${priority}", "${dateOfCompletion}")`
+			} else {
+				sql = `INSERT INTO issue (status, userEmail, location, dateOfReport, description, priority) VALUES("${status}", "${userEmail}", "${location}", "${dateOfReport}", "${description}", "${priority}")`
+			}
 			await this.db.run(sql)
 			return true
 		} catch(err) {
@@ -60,7 +65,7 @@ module.exports = class Issue {
 
 
 			//GET RID OF THIS
-			return true //HERE JUST SO I DON'T USE UP MY EMAIL SENDING LIMIT
+	 		return true //HERE JUST SO I DON'T USE UP MY EMAIL SENDING LIMIT
 			//GET RID OF THIS
 
 
@@ -90,13 +95,47 @@ module.exports = class Issue {
 		
 		const data = await this.db.all(sql)
 
+
 		if(data.length ==0) throw new Error(`No current problems are set to ${status}`)
-		if(status == 'resolved'){
-			return data
-		} else {
-			//edit the days until resolved
-			return data
+
+		//EDIT THE DATA FOR WHAT WOULD BE: (dateOfCompletion)
+		//TO BE days elapsed (since completion or until today)
+
+		var currentDate = new Date()
+		currentDate = currentDate.toLocaleDateString("en-US")
+		//this is in US format:
+		var i
+		var reportDate
+		var completionDate
+		var differenceInTime
+		var daysElapsed
+
+		for (i = 0; i < data.length; i++){
+			//reportDate = new Date(data[i].dateOfReport)
+			reportDate = data[i].dateOfReport
+			var dateAsArray = reportDate.split('/')
+		    reportDate = dateAsArray[1] + "/" + dateAsArray[0] + "/" + dateAsArray[2] //NEEDS TO CONVERT TO US FORMAT
+			reportDate = new Date(reportDate)
+			currentDate = new Date(currentDate)
+			if(data[i].dateOfCompletion == null){ //if not yet completed
+				// To calculate the time difference of two dates 
+				differenceInTime = Math.abs(currentDate.getTime() - reportDate.getTime()) 
+				// To calculate the no. of days between two dates 
+				daysElapsed = differenceInTime / (1000 * 3600 * 24)
+				data[i].dateOfCompletion = Math.round(daysElapsed)
+			} else {
+				completionDate = data[i].dateOfCompletion
+				var dateAsArray = completionDate.split('/')
+		        completionDate = new Date (dateAsArray[1] + "/" + dateAsArray[0] + "/" + dateAsArray[2])//NEEDS TO CONVERT TO US FORMAT
+				// To calculate the time difference of two dates 
+				differenceInTime = Math.abs(completionDate.getTime() - reportDate.getTime())
+				// To calculate the no. of days between two dates 
+				daysElapsed = differenceInTime / (1000 * 3600 * 24)
+				data[i].dateOfCompletion = Math.round(daysElapsed)
+			}
 		}
+
+		return data
 	}
 
 	async voteForIssue(issueID){ //will update the priority of an issue by the numberOfVotes
