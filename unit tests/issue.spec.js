@@ -181,7 +181,7 @@ describe('viewIssueBy()', () => {
 	test('Days elapsed since reported for not yet resolved issue', async done => {
 		expect.assertions(1)
 		const account = await new Issue()
-		await account.addIssue("first", "24, 23", "resolved", "5/10/2019") // resolved today, so should = 8
+		await account.addIssue("first", "24, 23", "not resolved", "5/10/2019") // resolved today, so should = 8
 		const issues = await account.viewIssueBy("all")
 
 		let reportDate = new Date("10/5/2019") //US format

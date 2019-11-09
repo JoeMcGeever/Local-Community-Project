@@ -14,7 +14,7 @@ module.exports = class Issue {
 		})()
 	}
 
-	async addIssue(userEmail, location, description, dateOfReport) {
+	async addIssue(userEmail, location, description, dateOfCompletion) {
 		const priority = 0
 		const status = "reported"
 		try {
@@ -29,8 +29,13 @@ module.exports = class Issue {
 		    //creates the month
 			var d = new Date()
 			const month = d.getMonth() + 1
-			if(dateOfReport === null) {dateOfReport = d.getDate() + "/" + month + "/" + d.getFullYear()}
-			let sql = `INSERT INTO issue (status, userEmail, location, dateOfReport, description, priority) VALUES("${status}", "${userEmail}", "${location}", "${dateOfReport}", "${description}", "${priority}")`
+			const dateOfReport = d.getDate() + "/" + month + "/" + d.getFullYear()
+			let sql
+			if(dateOfCompletion !== null){
+				sql = `INSERT INTO issue (status, userEmail, location, dateOfReport, description, priority, dateofCompletion) VALUES("${status}", "${userEmail}", "${location}", "${dateOfReport}", "${description}", "${priority}", "${dateOfCompletion}")`
+			} else {
+				sql = `INSERT INTO issue (status, userEmail, location, dateOfReport, description, priority) VALUES("${status}", "${userEmail}", "${location}", "${dateOfReport}", "${description}", "${priority}")`
+			}
 			await this.db.run(sql)
 			return true
 		} catch(err) {
@@ -60,7 +65,7 @@ module.exports = class Issue {
 
 
 			//GET RID OF THIS
-			return true //HERE JUST SO I DON'T USE UP MY EMAIL SENDING LIMIT
+	 		return true //HERE JUST SO I DON'T USE UP MY EMAIL SENDING LIMIT
 			//GET RID OF THIS
 
 
@@ -116,15 +121,17 @@ module.exports = class Issue {
 				// To calculate the time difference of two dates 
 				differenceInTime = Math.abs(currentDate.getTime() - reportDate.getTime()) 
 				// To calculate the no. of days between two dates 
-				daysElapsed = differenceInTime / (1000 * 3600 * 24);
+				daysElapsed = differenceInTime / (1000 * 3600 * 24)
 				data[i].dateOfCompletion = Math.round(daysElapsed)
 			} else {
 				completionDate = data[i].dateOfCompletion
+				var dateAsArray = completionDate.split('/')
+		        completionDate = new Date (dateAsArray[1] + "/" + dateAsArray[0] + "/" + dateAsArray[2])//NEEDS TO CONVERT TO US FORMAT
 				// To calculate the time difference of two dates 
-				differenceInTime = completionDate.getTime() - reportDate.getTime(); 
+				differenceInTime = Math.abs(completionDate.getTime() - reportDate.getTime())
 				// To calculate the no. of days between two dates 
-				daysElapsed = differenceInTime / (1000 * 3600 * 24);
-				data[i].dateOfCompletion = daysElapsed
+				daysElapsed = differenceInTime / (1000 * 3600 * 24)
+				data[i].dateOfCompletion = Math.round(daysElapsed)
 			}
 		}
 
