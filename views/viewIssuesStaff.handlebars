@@ -17,7 +17,12 @@
 	<p>Issues:</p>
 	<ul>
 	{{#each issues}}
-	<li>{{this.id}}, {{this.status}}, {{this.description}}, {{this.location}}, {{this.dateOfReport}}, {{priority}}</li>
+	<li>{{this.id}}, {{this.status}}, {{this.description}}, {{this.location}}, {{this.dateOfReport}}, {{priority}} <select>
+    <option value="Completed">Completed</option>
+    <option value="OverDue" selected="selected">OverDue</option>
+    <option value="SentToPayer">SentToPayer</option>
+    <option value="None">None</option>
+    </select></li>
 	{{/each}}
 	</ul>
 </body>
