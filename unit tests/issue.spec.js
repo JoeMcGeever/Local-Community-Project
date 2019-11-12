@@ -84,7 +84,45 @@ describe('voteForIssue()', () => {
 		const account = await new Issue()
 		await account.addIssue("userEmail", "location", "description", null)
 		const update = await account.voteForIssue(1)
-		expect(update).toBe(true)
+		expect(update).toBe(1)
+		done()
+	})
+
+	test('When vote reaches 5, upgrade priority', async done => {
+		expect.assertions(1)
+		const account = await new Issue()
+		await account.addIssue("userEmail", "location", "description", null)
+		let update
+		let i = 0
+		for(i = 0; i < 5; i++){
+		    update = await account.voteForIssue(1)
+	    } 
+		expect(update).toBe(5)
+		done()
+	})
+
+	test('When vote reaches 10, upgrade priority', async done => {
+		expect.assertions(1)
+		const account = await new Issue()
+		await account.addIssue("userEmail", "location", "description", null)
+		let update
+		let i = 0
+		for(i = 0; i < 10; i++){
+		    update = await account.voteForIssue(1)
+	    } 
+		expect(update).toBe(10)
+		done()
+	})
+
+})
+
+describe('updateJobPriotiy()', () => { 
+	test('When vote is sent as 0, downgrade priority', async done => {
+		expect.assertions(1)
+		const account = await new Issue()
+		await account.addIssue("userEmail", "location", "description", null)
+		const downgrade = await account.updateJobPrioity(1, 0)
+		expect(downgrade).toBe(true)
 		done()
 	})
 

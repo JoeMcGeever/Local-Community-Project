@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Issues but for (staff)</title>
+	<link href="css/style.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+	<p><a href= "/">Home </a></p>
+    <p><a href="/viewIssuesStaff/all">All Issues</a></p>
+    <p><a href="/viewIssuesStaff/resolved">Resolved Issues</a></p>
+    <p><a href="/viewIssuesStaff/reported">Reported Issues</a></p>
+    <p><a href="/viewIssuesStaff/allocated">Allocated Issues</a></p>
+	<header>
+		<h1>{{title}}</h1>
+	</header>
+	<p>Issues:</p>
+	<ul>
+	<form action="/viewIssues" method="post">
+	{{#each issues}}
+	<li>{{@index}}, {{this.status}}, {{this.description}}, {{this.location}}, {{this.dateOfReport}}, {{priority}}
+	<input type="hidden" name="id" value={{this.id}}> 
+	<select name="priority">
+		<option value=2 selected="selected">No Change</option>
+    	<option value=0>Low</option>
+    	<option value=5>Medium</option>
+    	<option value=10>High</option>
+    </select>
+	<select name="status">
+		<option value="No change" selected="selected">No Change</option>
+    	<option value="Allocated">Allocated</option>
+    	<option value="Reported">Reported</option>
+    	<option value="Resolved">Resolved</option>
+    </select>
+	</li>
+	{{/each}}
+	<p><input type="submit" value="Confirm"></p>
+	</form>
+	</ul>
+</body>
+</html>

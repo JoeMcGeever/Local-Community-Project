@@ -8,7 +8,7 @@ module.exports = class Issue {
 		return (async() => {
 			this.db = await sqlite.open(dbName)
 			// we need this table to store the user accounts
-			const sql = 'CREATE TABLE IF NOT EXISTS issue (id INTEGER PRIMARY KEY AUTOINCREMENT, status TEXT, userEmail TEXT, location TEXT, dateOfReport TEXT, dateOfCompletion TEXT, description TEXT, priority TEXT);'
+			const sql = 'CREATE TABLE IF NOT EXISTS issue (id INTEGER PRIMARY KEY AUTOINCREMENT, status TEXT, userEmail TEXT, location TEXT, dateOfReport TEXT, dateOfCompletion TEXT, description TEXT, priority TEXT, numberOfVotes INTEGER);'
 			await this.db.run(sql)
 			return this
 		})()
@@ -32,7 +32,7 @@ module.exports = class Issue {
 			const dateOfReport = d.getDate() + "/" + month + "/" + d.getFullYear()
 			let sql
 			if(dateOfCompletion !== null){
-				sql = `INSERT INTO issue (status, userEmail, location, dateOfReport, description, priority, dateofCompletion) VALUES("${status}", "${userEmail}", "${location}", "${dateOfReport}", "${description}", "${priority}", "${dateOfCompletion}")`
+				sql = `INSERT INTO issue (status, userEmail, location, dateOfReport, description, priority, dateofCompletion, numberOfVotes) VALUES("${status}", "${userEmail}", "${location}", "${dateOfReport}", "${description}", "${priority}", "${dateOfCompletion}", 0)`
 			} else {
 				sql = `INSERT INTO issue (status, userEmail, location, dateOfReport, description, priority) VALUES("${status}", "${userEmail}", "${location}", "${dateOfReport}", "${description}", "${priority}")`
 			}
@@ -67,7 +67,6 @@ module.exports = class Issue {
 			//GET RID OF THIS
 	 		return true //HERE JUST SO I DON'T USE UP MY EMAIL SENDING LIMIT
 			//GET RID OF THIS
-
 
 			//send email here
 			const sgMail = require('@sendgrid/mail');
@@ -141,18 +140,44 @@ module.exports = class Issue {
 	async voteForIssue(issueID){ //will update the priority of an issue by the numberOfVotes
 		//if priority is a number spanning from low-medium-high (after 10 votes, put up)
 		//can only be voted for if status == reported
-		let sql = `SELECT priority FROM issue WHERE id = "${issueID}";`
+		let sql = `SELECT numberOfVotes FROM issue WHERE id = "${issueID}";`
 
 		let currentNumber = await this.db.get(sql)
-		currentNumber = Number(currentNumber.priority) + 1
 
-		sql = `UPDATE issue SET priority = "${currentNumber}" WHERE id = "${issueID}";`
+
+		currentNumber = currentNumber.numberOfVotes
+		currentNumber = Number(currentNumber) + 1
+		if(currentNumber == 5) {
+			this.updateJobPrioity(issueID, 5)
+			await this.db.run(sql)
+		}else if (currentNumber == 10) {
+			this.updateJobPrioity(issueID, 10)
+		}
+		sql = `UPDATE issue SET numberOfVotes = "${currentNumber}" WHERE id = "${issueID}";`
 		await this.db.run(sql)
 
 
+		return currentNumber
+
+
+	}
+
+	async updateJobPrioity(issueID, numberOfVotes){
+		//send the 2nd parameter as 5 to make medium, 10 to make high
+		//can be used accessed by staff, but not locals
+		let sql
+		if(numberOfVotes == 0) {
+			sql = `UPDATE issue SET priority = "Low" WHERE id = "${issueID}";`
+			await this.db.run(sql)
+		}
+		if(numberOfVotes == 5) {
+			sql = `UPDATE issue SET priority = "Medium" WHERE id = "${issueID}";`
+			await this.db.run(sql)
+		}else if (numberOfVotes == 10) {
+			sql = `UPDATE issue SET priority = "High" WHERE id = "${issueID}";`
+			await this.db.run(sql)
+		}
 		return true
-
-
 	}
 
 	async getJobList(){ //returns a list of jobs to do in a day
