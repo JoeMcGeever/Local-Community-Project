@@ -68,7 +68,6 @@ module.exports = class Issue {
 	 		return true //HERE JUST SO I DON'T USE UP MY EMAIL SENDING LIMIT
 			//GET RID OF THIS
 
-
 			//send email here
 			const sgMail = require('@sendgrid/mail');
             sgMail.setApiKey('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');
@@ -149,11 +148,10 @@ module.exports = class Issue {
 		currentNumber = currentNumber.numberOfVotes
 		currentNumber = Number(currentNumber) + 1
 		if(currentNumber == 5) {
-			sql = `UPDATE issue SET priority = "Medium" WHERE id = "${issueID}";`
+			this.updateJobPrioity(issueID, 5)
 			await this.db.run(sql)
 		}else if (currentNumber == 10) {
-			sql = `UPDATE issue SET priority = "High" WHERE id = "${issueID}";`
-			await this.db.run(sql)
+			this.updateJobPrioity(issueID, 10)
 		}
 		sql = `UPDATE issue SET numberOfVotes = "${currentNumber}" WHERE id = "${issueID}";`
 		await this.db.run(sql)
@@ -162,6 +160,24 @@ module.exports = class Issue {
 		return currentNumber
 
 
+	}
+
+	async updateJobPrioity(issueID, numberOfVotes){
+		//send the 2nd parameter as 5 to make medium, 10 to make high
+		//can be used accessed by staff, but not locals
+		let sql
+		if(numberOfVotes == 0) {
+			sql = `UPDATE issue SET priority = "Low" WHERE id = "${issueID}";`
+			await this.db.run(sql)
+		}
+		if(numberOfVotes == 5) {
+			sql = `UPDATE issue SET priority = "Medium" WHERE id = "${issueID}";`
+			await this.db.run(sql)
+		}else if (numberOfVotes == 10) {
+			sql = `UPDATE issue SET priority = "High" WHERE id = "${issueID}";`
+			await this.db.run(sql)
+		}
+		return true
 	}
 
 	async getJobList(){ //returns a list of jobs to do in a day

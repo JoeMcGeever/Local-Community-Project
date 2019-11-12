@@ -150,7 +150,7 @@ router.get('/viewIssues/:status', async ctx =>{
 		const user = await new User(dbName)
 		const username = ctx.session.username
 		const staff = await user.isStaff(username)
-		console.log(staff)
+		
 	    if(staff == 1 ){
 		    await ctx.render('viewIssuesStaff', {issues: issueArray})
 	        } else {
@@ -161,6 +161,45 @@ router.get('/viewIssues/:status', async ctx =>{
 	}
 	
 })
+
+
+router.post('/viewIssues', async ctx => { 
+	try {
+		let i
+		//console.log(ctx.session.username)
+		const issue = await new Issue(dbNameIssue)
+		const user = await new User(dbName)
+		if(ctx.session.authorised === null)	throw new Error("Please log in")
+		const body = ctx.request.body
+		//console.log(body)
+		const staff = await user.isStaff(ctx.session.username)
+
+
+		if(staff != 1) { //if not staff - use the vote for issue function
+			if(body.id === undefined|| body.id.length != 1) throw new Error("Please vote for one issue")
+			//if nothing is selected or more than one is, throw the error
+			//otherwise, cast the vote with the id of the selected issue
+			issue.voteForIssue(body.id)
+			return ctx.redirect('/?msg=vote has been sent')
+		}
+		//if staff; run the updateJobPriority function
+		for(i = 0; i < body.id.length; i++){
+			//console.log(body.id[i] + " is the id, with:" + body.priority[i] + "priority, and " + body.status[i] + " status.")
+			if(body.priority[i] != 2){// if 2, this means no change. if 0, change to low
+				issue.updateJobPrioity(body.id[i], body.priority[i])// if 5, = medium, 10 = high
+			}
+			if(body.status[i] != "No change"){
+				issue.updateJobStatus(body.id[i], body.status[i])
+			}
+		}
+		return ctx.redirect('/?msg=change made changes')
+
+	} catch(err) {
+		await ctx.render('error', {message: err.message})
+	}
+})
+
+
 
 app.use(router.routes())
 module.exports = app.listen(port, async() => console.log(`listening on port ${port}`))

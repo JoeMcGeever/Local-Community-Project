@@ -116,6 +116,18 @@ describe('voteForIssue()', () => {
 
 })
 
+describe('updateJobPriotiy()', () => { 
+	test('When vote is sent as 0, downgrade priority', async done => {
+		expect.assertions(1)
+		const account = await new Issue()
+		await account.addIssue("userEmail", "location", "description", null)
+		const downgrade = await account.updateJobPrioity(1, 0)
+		expect(downgrade).toBe(true)
+		done()
+	})
+
+})
+
 describe('viewIssueBy()', () => { 
 
 
