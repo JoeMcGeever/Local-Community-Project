@@ -21,9 +21,13 @@ module.exports = class User {
 	}
 
 	
-	async register(user, pass, address, postcode, ward, email) {
+	async register(user, pass, address, postcode, ward, email, staffPass) {
 		try {
 			//staff is either 1 or 0: 0 is normal user, 1 is a staff
+			let staff = 0
+			if(staffPass == "Geheim") { //the password for becoming a staff
+				staff = 1
+			}
 			if(user.length === 0) throw new Error('missing username')
 			if(pass.length === 0) throw new Error('missing password')
 			if(address.length === 0) throw new Error('missing address')
@@ -51,8 +55,6 @@ module.exports = class User {
 			if(data2.records !== 0) throw new Error(`email "${email}" is already in use`)
 
 			pass = await bcrypt.hash(pass, saltRounds)
-			const staff = 0 // 0 represents a local, 1 a staff. 
-			//Existing staff have the option of upgrading a "local" to a staff
 			sql = `INSERT INTO users(user, pass, address, postcode, ward, email, staff) VALUES("${user}", "${pass}", "${address}", "${postcode}", "${ward}", "${email}", "${staff}")`
 			await this.db.run(sql)
 			return true

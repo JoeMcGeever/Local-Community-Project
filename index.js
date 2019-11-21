@@ -81,7 +81,7 @@ router.post('/registerPost', koaBody, async ctx => {
 
 		// call the functions in the module
 		const user = await new User(dbName)
-		await user.register(body.user, body.pass, body.address, body.postcode, body.ward, body.email)
+		await user.register(body.user, body.pass, body.address, body.postcode, body.ward, body.email, body.staffPass)
 		ctx.redirect(`/?msg=new user "${body.name}" added`)
 	} catch(err) {
 		await ctx.render('error', {message: err.message})

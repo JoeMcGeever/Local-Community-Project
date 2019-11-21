@@ -22,7 +22,7 @@
 	{{#each issues}}
 	<li> 
 		<input type="checkbox" class="radio" value={{this.id}} name="id" />
-		{{@index}}, {{this.status}}, {{this.description}}, {{this.location}}, {{this.dateOfReport}}, {{priority}}
+		{{@index}}, {{this.status}}, {{this.description}}, {{this.location}}, {{this.dateOfReport}}, {{this.priority}}, {{this.numberOfVotes}}
 	</li>
 	{{/each}}
 	<p><input type="submit" value="Vote"></p>

@@ -14,7 +14,6 @@
     <div class="center-block" style="background-color:rgba(255,255,255,.7); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 30px 60px; border-radius: 25px; box-shadow: 2px 2px 2px;">
     <div class="">
         <fieldset>
-        <legend>Login</legend>
             <form action="/registerPost" enctype="multipart/form-data" method="post">
 			    <p>Username:<br /><input type="text" name="user" placeholder="your username (no spaces)" value=""></p>
                 <p>Password:<br /><input type="password" name="pass" placeholder="your chosen password" value=""></p>
@@ -22,6 +21,7 @@
 			    <p>Postcode (CV3 xxx):<br /> <input type="text" name = "postcode" placeholder="last three characters" value=""></p>
 		    	<p>Ward:<br /> <input type="text" name = "ward" placeholder="your ward" value=""></p>
 		    	<p>Email:<br /> <input type="text" name = "email" placeholder="Enter your address" value=""></p>
+          <p>Staff password:<br /> <input type="text" name = "staffPass" placeholder="For staff only" value=""></p>
 			    <p><input type="submit" value="Create"></p>
 		    </form>
         </fieldset>
