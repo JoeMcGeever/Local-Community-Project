@@ -28,7 +28,7 @@ module.exports = class Issue {
 			//if((userEmail.match(/@/g)||[]).length!= 1) throw new Error('please enter a valid email')
 			
 
-
+			//validate format of location (must be GPS)
 			location = location.replace(/\s+/g, '');
 			var formatTest = location.split(',')
 			if(isNaN(parseFloat(formatTest[0])) || isNaN(parseFloat(formatTest[1])) || formatTest.length != 2) {
