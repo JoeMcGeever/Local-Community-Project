@@ -40,6 +40,30 @@ describe('addIssue()', () => {
 		done()
 	})
 
+	test('location is not correct format (one number)', async done => {
+		expect.assertions(1)
+		const account = await new Issue()
+		await expect (account.addIssue('joeMcg@gmail.com', '230', 'Pothole', null))
+			.rejects.toEqual( Error('location must be as GPS coords (format by 2 numbers with a comma inbetween)') )
+		done()
+	})
+
+	test('location is not correct format (three numbers)', async done => {
+		expect.assertions(1)
+		const account = await new Issue()
+		await expect (account.addIssue('joeMcg@gmail.com', '230, 28987, 222', 'Pothole', null))
+			.rejects.toEqual( Error('location must be as GPS coords (format by 2 numbers with a comma inbetween)') )
+		done()
+	})
+
+	test('location is not correct format (word)', async done => {
+		expect.assertions(1)
+		const account = await new Issue()
+		await expect (account.addIssue('joeMcg@gmail.com', 'incorrect', 'Pothole', null))
+			.rejects.toEqual( Error('location must be as GPS coords (format by 2 numbers with a comma inbetween)') )
+		done()
+	})
+
 })
 
 
@@ -82,7 +106,7 @@ describe('voteForIssue()', () => {
 	test('Vote for an issue correctly', async done => {
 		expect.assertions(1)
 		const account = await new Issue()
-		await account.addIssue("userEmail", "location", "description", null)
+		await account.addIssue("userEmail", "23, 5", "description", null)
 		const update = await account.voteForIssue(1)
 		expect(update).toBe(1)
 		done()
@@ -91,7 +115,7 @@ describe('voteForIssue()', () => {
 	test('When vote reaches 5, upgrade priority', async done => {
 		expect.assertions(1)
 		const account = await new Issue()
-		await account.addIssue("userEmail", "location", "description", null)
+		await account.addIssue("userEmail", "23, 5", "description", null)
 		let update
 		let i = 0
 		for(i = 0; i < 5; i++){
@@ -104,7 +128,7 @@ describe('voteForIssue()', () => {
 	test('When vote reaches 10, upgrade priority', async done => {
 		expect.assertions(1)
 		const account = await new Issue()
-		await account.addIssue("userEmail", "location", "description", null)
+		await account.addIssue("userEmail", "23, 5", "description", null)
 		let update
 		let i = 0
 		for(i = 0; i < 10; i++){
@@ -120,7 +144,7 @@ describe('updateJobPriotiy()', () => {
 	test('When vote is sent as 0, downgrade priority', async done => {
 		expect.assertions(1)
 		const account = await new Issue()
-		await account.addIssue("userEmail", "location", "description", null)
+		await account.addIssue("userEmail", "23, 5", "description", null)
 		const downgrade = await account.updateJobPrioity(1, 0)
 		expect(downgrade).toBe(true)
 		done()

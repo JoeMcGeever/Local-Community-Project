@@ -26,6 +26,18 @@ module.exports = class Issue {
 			if(location.length=== 0) throw new Error('missing location')
 			if(description.length === 0)throw new Error('missing description')
 			//if((userEmail.match(/@/g)||[]).length!= 1) throw new Error('please enter a valid email')
+			
+
+
+			location = location.replace(/\s+/g, '');
+			var formatTest = location.split(',')
+			if(isNaN(parseFloat(formatTest[0])) || isNaN(parseFloat(formatTest[1])) || formatTest.length != 2) {
+				throw new Error ('location must be as GPS coords (format by 2 numbers with a comma inbetween)')
+			}
+
+
+
+
 		    //creates the month
 			var d = new Date()
 			const month = d.getMonth() + 1
