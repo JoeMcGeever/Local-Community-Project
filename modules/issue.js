@@ -15,7 +15,7 @@ module.exports = class Issue {
 	}
 
 	async addIssue(userEmail, location, description, dateOfCompletion) {
-		const priority = 0
+		const priority = "low"
 		const status = "reported"
 		try {
 			//only email and location needs validating
@@ -34,7 +34,7 @@ module.exports = class Issue {
 			if(dateOfCompletion !== null){
 				sql = `INSERT INTO issue (status, userEmail, location, dateOfReport, description, priority, dateofCompletion, numberOfVotes) VALUES("${status}", "${userEmail}", "${location}", "${dateOfReport}", "${description}", "${priority}", "${dateOfCompletion}", 0)`
 			} else {
-				sql = `INSERT INTO issue (status, userEmail, location, dateOfReport, description, priority) VALUES("${status}", "${userEmail}", "${location}", "${dateOfReport}", "${description}", "${priority}")`
+				sql = `INSERT INTO issue (status, userEmail, location, dateOfReport, description, priority, numberOfVotes) VALUES("${status}", "${userEmail}", "${location}", "${dateOfReport}", "${description}", "${priority}", 0)`
 			}
 			await this.db.run(sql)
 			return true

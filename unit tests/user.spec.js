@@ -12,6 +12,16 @@ describe('register()', () => {
 		done()
 	})
 
+	test('register a valid staff account', async done => {
+		expect.assertions(1)
+		const account = await new Accounts()
+		await account.register('doej', 'password', '28 Bonley Road', '2RE', 24, 'mcg@uni.com', 'Geheim')
+		const staff = await account.isStaff('doej')
+		expect(staff).toBe(1)
+		done()
+	})
+
+
 	test('register a duplicate username', async done => {
 		expect.assertions(1)
 		const account = await new Accounts()

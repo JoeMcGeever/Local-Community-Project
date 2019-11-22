@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "acceptance": "jest --coverage --detectOpenHandles",
+    "acceptance": "bash test.sh",
     "jsdoc": "node_modules/.bin/jsdoc -c jsdoc.conf",
     "linter": "node_modules/.bin/eslint .",
     "test": "jest --coverage --detectOpenHandles",
@@ -26,7 +26,8 @@
     "bcrypt": "^3.0.6",
     "bcrypt-promise": "^2.0.0",
     "fs-extra": "^7.0.1",
-    "handlebars": "^4.5.1",
+    "handlebars": "^4.5.3",
+    "jest-image-snapshot": "^2.11.1",
     "koa": "^2.6.2",
     "koa-body": "^4.0.8",
     "koa-bodyparser": "^4.2.1",
@@ -35,6 +36,8 @@
     "koa-static": "^5.0.0",
     "koa-views": "^6.1.5",
     "mime-types": "^2.1.22",
+    "puppeteer": "^2.0.0",
+    "puppeteer-har": "^1.1.1",
     "sqlite-async": "^1.0.12"
   },
   "devDependencies": {

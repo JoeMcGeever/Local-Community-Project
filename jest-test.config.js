@@ -15,5 +15,8 @@ module.exports = {
 	testPathIgnorePatterns: [
 		'/node_modules/',
 		'/__tests__/fixtures/',
+		'/accountUI.test.js',
+		'/acceptance tests/',
+		'accountUI.test.js'
 	]
 }
