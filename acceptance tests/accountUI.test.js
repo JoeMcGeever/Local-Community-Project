@@ -86,6 +86,59 @@ describe('Account', () => {
 		done()
 	}, 16000)
 
+	test('Login as a new staff member', async done => {
+		// start generating a trace file
+		await page.tracing.start({path: 'trace/loginSuccessful.json',screenshots: true})
+		await har.start({ path: 'trace/loginSuccessful.har' })
+		// ARRANGE
+		await page.goto('http://localhost:8080/register', { timeout: 30000, waitUntil: 'load' })
+		// page.goto('http://localhost:8080', { timeout: 30000, waitUntil: 'load' })
+		// take a screenshot and save to the file system
+
+
+		await page.type('input[name=user]', 'newStaffLogin')
+		await page.type('input[name=pass]', 'newStaff')
+		await page.type('input[name=address]', 'newAddress')
+		await page.type('input[name=postcode]', '2BE')
+		await page.type('input[name=ward]', '1')
+		await page.type('input[name=email]', 'newStaff@email.com')
+		await page.type('input[name=staffPass]', 'Geheim')
+
+		await page.click('input[type=submit]')
+
+		await page.goto('http://localhost:8080/login?msg=Please%20log%20in', { timeout: 30000, waitUntil: 'load' })
+		// ACT
+		// complete the form and click submit
+		await page.type('input[name=user]', 'newStaffLogin')
+		await page.type('input[name=pass]', 'newStaff')
+		await page.click('input[type=submit]')
+        await page.waitForSelector('h1') //wait for next page to load (can we see top level heading?)
+		//so h1 should be = "Home"
+	//	await page.waitFor(1000) // sometimes you need a second delay
+	
+	    await page.goto('http://localhost:8080/addIssue', { timeout: 30000, waitUntil: 'load' })
+		await page.screenshot({ path: 'screenshots/addIssue.png' })
+        await page.type('input[name=location]', '23, 15')
+		await page.type('input[name=description]', 'pothole')
+        await page.click('input[type=submit]')
+
+		await page.goto('http://localhost:8080/viewIssues/all', { timeout: 30000, waitUntil: 'load' })
+		await page.screenshot({ path: 'screenshots/registerNewStaff.png' })
+
+		
+		const title = await page.title()
+		expect(title).toBe('Issues but for (staff)') 
+
+		// grab a screenshot
+		const image = await page.screenshot()
+		// compare to the screenshot from the previous test run
+		expect(image).toMatchImageSnapshot()
+		// stop logging to the trace files
+		await page.tracing.stop()
+		await har.stop()
+		done()
+	}, 16000)
+
 
 	test('Enter incorrect username', async done => {
 		// start generating a trace file
@@ -245,7 +298,7 @@ describe('Issue Creation', () => {
 		await page.tracing.stop()
 		await har.stop()
 		done()
-    }, 16000)
+    }, 16000)	
 
     test('Missing a box should throw error', async done => {
 		// start generating a trace file
@@ -273,4 +326,77 @@ describe('Issue Creation', () => {
     
 
 
+})
+
+describe('Issue View (as local)', () => {
+	test('View all issues', async done => {
+		// start generating a trace file
+		await page.tracing.start({path: 'trace/reportIssueSuccess.json',screenshots: true})
+		await har.start({ path: 'trace/reportIssueSuccess.har' })
+		// ARRANGE
+		await page.goto('http://localhost:8080/addIssue', { timeout: 30000, waitUntil: 'load' })
+        await page.type('input[name=location]', '23, 15')
+		await page.type('input[name=description]', 'pothole')
+		await page.click('input[type=submit]')
+		
+		await page.goto('http://localhost:8080/viewIssues/all', { timeout: 30000, waitUntil: 'load' })
+		await page.screenshot({ path: 'screenshots/viewIssue_all.png' })
+
+        await page.waitForSelector('h1')
+
+		// ASSERT
+		const title = await page.title()
+		expect(title).toBe('Issues but for (staff)')
+		
+		const image = await page.screenshot()
+		expect(image).toMatchImageSnapshot()
+		await page.tracing.stop()
+		await har.stop()
+		done()
+	}, 16000)	
+
+	
+	test('Vote for an issue', async done => {
+		// start generating a trace file
+		done()}, 16000)	
+})
+
+describe('Issue View (as staff)', () => {
+	test('View all issues', async done => {
+		// start generating a trace file
+		await page.tracing.start({path: 'trace/reportIssueSuccess.json',screenshots: true})
+		await har.start({ path: 'trace/reportIssueSuccess.har' })
+		// ARRANGE
+		await page.goto('http://localhost:8080/login?msg=Please%20log%20in', { timeout: 30000, waitUntil: 'load' })
+		// page.goto('http://localhost:8080', { timeout: 30000, waitUntil: 'load' })
+		// take a screenshot and save to the file system
+
+
+        await page.type('input[name=user]', 'newStaffLogin')
+		await page.type('input[name=pass]', 'newStaff')
+		await page.click('input[type=submit]')
+		
+		await page.goto('http://localhost:8080/viewIssues/all', { timeout: 30000, waitUntil: 'load' })
+		await page.screenshot({ path: 'screenshots/viewIssues_staff.png' })
+        await page.waitForSelector('h1')
+
+		// ASSERT
+		const title = await page.title()
+		expect(title).toBe('Issues but for (staff)')
+
+		const image = await page.screenshot()
+		expect(image).toMatchImageSnapshot()
+		await page.tracing.stop()
+		await har.stop()
+		done()
+	}, 16000)	
+
+	
+	test('Update priority', async done => {
+		// start generating a trace file
+		done()}, 16000)	
+
+	test('Update status', async done => {
+		// start generating a trace file
+		done()}, 16000)	
 })
