@@ -11,7 +11,7 @@
     <p><a href="/viewIssues/resolved">Resolved Issues</a></p>
     <p><a href="/viewIssues/reported">Reported Issues</a></p>
     <p><a href="/viewIssues/allocated">Allocated Issues</a></p>
-	<p><a href="#" onClick="document.location.href=getLocation();">Get reported by distance away from you</a></p>
+	<button onclick="getLocation()">Get reported by distance away from you</button>
 	<header>
 		<h1>{{title}}</h1>
 	</header>
@@ -42,15 +42,6 @@
 	</ul>
 	
 
-
-
-<p>Click the button to get your coordinates.</p>
-
-<button onclick="getLocation()">Try It</button>
-
-<p id="demo"></p>
-
-
 <script>
 var x = document.getElementById("demo");
 
@@ -64,8 +55,10 @@ function getLocation() {
 }
 
 function showPosition(position) {
-  x.innerHTML = "Latitude: " + position.coords.latitude + 
-  "<br>Longitude: " + position.coords.longitude;
+	document.location.href  = "/viewIssues/" + position.coords.latitude + "_" + position.coords.longitude
+
+ //  x.innerHTML = "Latitude: " + position.coords.latitude + 
+ // "<br>Longitude: " + position.coords.longitude;
 }
 </script>
 
