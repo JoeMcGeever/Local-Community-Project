@@ -145,7 +145,20 @@ router.get('/viewIssues/:status', async ctx =>{
 	try {
 	    const status = ctx.params.status
 		const issue = await new Issue(dbNameIssue)
-		let issueArray = await issue.viewIssueBy(status)
+		let issueArray
+
+		if(status == 'fromMe') {
+			//get the current gps ( this is to display to the view)
+			let gps = "25, 5" 
+			issueArray = await issue.viewIssueBy(gps)
+			
+		} else {
+			issueArray = await issue.viewIssueBy(status)
+		}
+
+
+
+
 
 		const user = await new User(dbName)
 		const username = ctx.session.username
