@@ -263,3 +263,20 @@ describe('viewIssueBy()', () => {
 	})
 
 })
+
+describe('viewIssueByCoords()', () => {   
+
+
+	test('distance returns correctly', async done => {
+		expect.assertions(1)
+		const account = await new Issue()
+		await account.addIssue("first", "24, 23", "not resolved", null)
+		const issues = await account.viewIssueByCoords('25-26')
+
+		expect(issues[0].location).toBe('323263.10 metres')
+		done()
+	})
+
+
+
+})
