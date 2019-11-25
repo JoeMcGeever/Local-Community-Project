@@ -26,6 +26,18 @@ module.exports = class Issue {
 			if(location.length=== 0) throw new Error('missing location')
 			if(description.length === 0)throw new Error('missing description')
 			//if((userEmail.match(/@/g)||[]).length!= 1) throw new Error('please enter a valid email')
+			
+
+			//validate format of location (must be GPS)
+			location = location.replace(/\s+/g, '');
+			var formatTest = location.split(',')
+			if(isNaN(parseFloat(formatTest[0])) || isNaN(parseFloat(formatTest[1])) || formatTest.length != 2) {
+				throw new Error ('location must be as GPS coords (format by 2 numbers with a comma inbetween)')
+			}
+
+
+
+
 		    //creates the month
 			var d = new Date()
 			const month = d.getMonth() + 1
@@ -136,6 +148,46 @@ module.exports = class Issue {
 
 		return data
 	}
+
+
+	angleConvert(degree) { //for getDistanceFromLatLonInKm
+	    return degree*(Math.PI/180)
+	}
+
+	getDistInM(x1, y1, x2, y2) {
+		var radiusOfEarth = 6371
+		var differenceLat = this.angleConvert(x2-x1)
+		var differenceLon = this.angleConvert(y2-y1) 
+		var step1 = Math.sin(differenceLat/2) * Math.sin(differenceLat/2) +  Math.cos(this.angleConvert(x1)) * Math.cos(this.angleConvert(x2)) * Math.sin(differenceLon/2) * Math.sin(differenceLon/2)
+		var step2 = 2 * Math.atan2(Math.sqrt(step1), Math.sqrt(1-step1)); 
+		var distance = radiusOfEarth * step2
+		return (distance * 1000).toFixed(2) //from kilometres to metres (2 decimal places)
+	  }
+
+	async viewIssueByCoords(coords){
+		//MAKE
+		console.log(coords)
+		let data = await this.viewIssueBy('all') //talk about in report --> modularisation is lit
+		var i
+		var instanceLocation
+		var instanceX
+		var instanceY
+		const userX = parseFloat(coords.split('-')[0])
+		const userY = parseFloat(coords.split('-')[1])
+		for (i = 0; i < data.length; i++){
+			instanceLocation = data[i].location
+
+			instanceX = parseFloat(instanceLocation.split(',')[0])
+			instanceY = parseFloat(instanceLocation.split(',')[1])
+			
+			data[i].location = this.getDistInM(instanceX, instanceY, userX, userY) + " metres"
+			//reset the data[i].location to be the distance away (in metres)
+		}
+		console.log(data)
+
+		return data
+	}
+
 
 	async voteForIssue(issueID){ //will update the priority of an issue by the numberOfVotes
 		//if priority is a number spanning from low-medium-high (after 10 votes, put up)

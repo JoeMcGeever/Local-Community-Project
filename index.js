@@ -163,6 +163,34 @@ router.get('/viewIssues/:status', async ctx =>{
 })
 
 
+router.get('/viewIssuesByCoords/:coordinates', async ctx =>{
+	if(ctx.session.authorised == null) return ctx.redirect('/login?msg=Please log in')
+	try {
+		const coordinates = ctx.params.coordinates
+
+		const issue = await new Issue(dbNameIssue)
+
+
+		const user = await new User(dbName)
+		const username = ctx.session.username
+		const staff = await user.isStaff(username)
+
+		let issueArray = await issue.viewIssueByCoords(coordinates) //need to make
+		
+
+
+	    if(staff == 1 ){
+		    await ctx.render('viewIssuesStaff', {issues: issueArray})
+	        } else {
+			await ctx.render('viewIssues', {issues: issueArray})
+		}
+	    } catch(err) {
+		await ctx.render('error', {message: err.message})
+	}
+	
+})
+
+
 router.post('/viewIssues', async ctx => { 
 	try {
 		let i
